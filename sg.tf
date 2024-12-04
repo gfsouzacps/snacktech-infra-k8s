@@ -1,6 +1,6 @@
-resource "aws_security_group" "sg" {
+resource "aws_security_group" "sg_from_file" {
   name        = "SG-${var.projectName}"
-  description = "Este grupo e usado na live de terraform"
+  description = "Este grupo e usado na aplicacao snack-tech"
   vpc_id      = data.aws_vpc.vpc.id
 
   ingress {

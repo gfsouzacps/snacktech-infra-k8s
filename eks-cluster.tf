@@ -21,7 +21,7 @@ resource "aws_eks_cluster" "cluster-snack-tech" {
 
   vpc_config {
     subnet_ids         = [for subnet in data.aws_subnet.subnet : subnet.id if subnet.availability_zone != "${var.regionDefault}e"]
-    security_group_ids = [data.aws_security_group.existing_sg.id != "" ? data.aws_security_group.existing_sg.id : aws_security_group.sg.id]
+    security_group_ids = [data.aws_security_group.existing_sg.id != "" ? data.aws_security_group.existing_sg.id : aws_security_group.sg_from_file.id]
   }
 
   access_config {
