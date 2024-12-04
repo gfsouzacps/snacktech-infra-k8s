@@ -1,0 +1,59 @@
+name: Deploy EKS Cluster with Terraform
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: us-east-1
+      CLUSTER_NAME: snack-tech
+
+    steps:
+    # 1. Checkout do código
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. Configurar o AWS CLI
+    - name: Configure AWS CLI
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # 3. Configurar o Terraform CLI
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.7 # Ajuste para a versão do Terraform utilizada
+
+    # 4. Inicializar o Terraform
+    - name: Terraform Init
+      run: terraform init
+
+    # 5. Validar o Terraform
+    - name: Terraform Validate
+      run: terraform validate
+
+    # 6. Gerar o plano do Terraform
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan
+
+    # 7. Aplicar o plano do Terraform
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+
+    # 8. Atualizar kubeconfig
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+    # 9. Verificar os nós do cluster
+    - name: Verify Cluster Nodes
+      run: kubectl get nodes
