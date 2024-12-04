@@ -11,7 +11,7 @@ variable "vpcCidr" {
 }
 
 variable "instanceType" {
-  default = "t3a.medium"
+  default = "t3.micro"
 }
 
 variable "accountIdVoclabs" {
