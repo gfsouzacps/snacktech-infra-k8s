@@ -53,7 +53,3 @@ jobs:
     - name: Update kubeconfig
       run: |
         aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
-
-    # 9. Verificar os nós do cluster
-    - name: Verify Cluster Nodes
-      run: kubectl get nodes
